@@ -8,14 +8,16 @@ author: "Horácio Pires"
 
 
 ## Loading and preprocessing the data
-```{r readdata}
+
+```r
  #1.
  dataactivity<-read.csv("activity.csv")
 ```
 
 
 ## What is mean total number of steps taken per day?
-```{r mean total steps}
+
+```r
 #1.
 #Rearrange and clean data
 sumdays<-tapply(dataactivity$steps, dataactivity$date, sum)
@@ -27,20 +29,33 @@ hist(sumdaysdf$totsteps, main = "Histogram of Total Steps per day", xlab = "Tota
 abline(v=mean(sumdaysdf$totsteps), col = "red")
 ```
 
+![](PA1_template_files/figure-html/mean total steps-1.png)<!-- -->
+
 ### Mean and Median
-```{r}
+
+```r
 #3.
 #Mean
 mean(sumdaysdf$totsteps)
 ```
-```{r}
+
+```
+## [1] 10766.19
+```
+
+```r
 #3.
 #Median
 median(sumdaysdf$totsteps)
 ```
 
+```
+## [1] 10765
+```
+
 ## What is the average daily activity pattern?
-```{r avg daily pattern}
+
+```r
 #1.
 #Create the mean array by interval and create a dataframe out of it
 meanint<-tapply(dataactivity$steps, dataactivity$interval, mean, na.rm = TRUE)
@@ -49,22 +64,36 @@ meanintdf<-data.frame(Interval = as.numeric(names(meanint)), MeanSteps = as.vect
 #Plot results as a line graph
 plot(meanintdf$Interval, meanintdf$MeanSteps, type='l', col=2, main="Average number of steps by Interval", xlab="Time Intervals", ylab="Average number of steps")
 ```
-```{r}
+
+![](PA1_template_files/figure-html/avg daily pattern-1.png)<!-- -->
+
+```r
 #2.
 # Identify the interval index which has the highest average steps
 intervalrow <- which.max(meanintdf$MeanSteps)
 ```
-```{r}
+
+```r
 #Interval
 meanintdf[intervalrow,1]
 ```
-```{r}
+
+```
+## [1] 835
+```
+
+```r
 #Mean nº of Steps
 meanintdf[intervalrow,2]
 ```
 
+```
+## [1] 206.1698
+```
+
 ## Imputing missing values
-```{r}
+
+```r
 #1.
 #Total of missing Values
 TotalNA<-sum(!complete.cases(dataactivity))
@@ -88,16 +117,28 @@ sumdaysdf_complete<-data.frame(days=names(sumdays_complete), totsteps=as.vector(
 hist(sumdaysdf_complete$totsteps, main = "Histogram of total number of steps per day with Input Values Replacing NA", xlab = "Steps per day"    )
 abline(v=mean(sumdaysdf_complete$totsteps), col = "red")
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 ### Mean and Median
-```{r}
+
+```r
 #4.
 #Mean
 mean(sumdaysdf_complete$totsteps)
 ```
-```{r}
+
+```
+## [1] 10766.19
+```
+
+```r
 #4.
 #Median
 median(sumdaysdf_complete$totsteps)
+```
+
+```
+## [1] 10766.19
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -105,7 +146,8 @@ median(sumdaysdf_complete$totsteps)
 The first important step is to create a function to split the Workdays from Weekends. The weekday function is good but only says whcih day of 
 the week are we in, so it's still necessary to split the if it's a workday from weekend. 
 
-```{r}
+
+```r
 week_day <- function(date) {
     wd <- weekdays(as.Date(date, '%Y-%m-%d'))
     if  (!(wd == 'Saturday' || wd == 'Sunday')) {
@@ -117,7 +159,8 @@ week_day <- function(date) {
 }
 ```
 Now we are ready to Sapply this fucntion to our new dataset
-```{r}
+
+```r
 #1.
 # Apply the new week_day function to the date column in the new dataset, creating a new
 #factor column with the information if it's weekday or weekend
@@ -137,6 +180,7 @@ p <- ggplot(meanintdf_complete, aes(interval, steps)) +
     labs(x="Interval", y=expression("Nº of Steps")) +
     ggtitle("Nº of steps Per Interval by type of day")
 print(p)
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
